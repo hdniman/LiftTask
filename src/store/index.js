@@ -3,12 +3,15 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     liftsData : [],
-    floors : [{name:5,status: "done"},{name:4,status: "done"},{name:3,status: "done"},{name:2,status: "done"},{name:1,status: "done"}],
+    floors : [],
     liftQueue : []
   },
   mutations: {
     loadLifts (state, payload) {
       state.liftsData = payload
+    },
+    loadFloors (state, payload) {
+      state.floors = payload
     },
     addLift (state) {
       state.liftsData.push({

@@ -42,7 +42,13 @@
     },
     setup() {
       const store = useStore()
-      store.commit("loadLifts", localStorage.getItem("lifts") == null ? [] : JSON.parse(localStorage.getItem("lifts")))
+      store.commit("loadLifts", localStorage.getItem("lifts") == null ? [{
+        name: "lift_" + store.state.liftsData.length,
+        position : 100,
+        status: "free",
+        target: 1
+      }] : JSON.parse(localStorage.getItem("lifts")))
+      store.commit("loadFloors", localStorage.getItem("floors") == null ? [{name:5,status: "done"},{name:4,status: "done"},{name:3,status: "done"},{name:2,status: "done"},{name:1,status: "done"}] : JSON.parse(localStorage.getItem("floors")))
       const liftsData = computed(() => {
         return store.getters["liftsData"]
       })
@@ -83,6 +89,7 @@
 
       window.addEventListener('beforeunload', event => {
         localStorage.setItem("lifts", JSON.stringify(liftsData.value))
+        localStorage.setItem("floors", JSON.stringify(floors.value))
       })
 
 
