@@ -55,12 +55,10 @@ export default createStore({
         const freeLifts = state.liftsData.filter(el => el.status == "free")
         if (freeLifts.length !=0) {
           const lift = freeLifts.reduce((prev, curr) => {
-            console.log(prev.position)
             return Math.abs(prev.position-target*100) <= Math.abs(curr.position-target*100) ? prev : curr
           })
           lift.target = target
           lift.status = "inWork"
-          console.log(state.liftQueue)
           state.liftQueue.shift()
           state.floors.find(el => el.name == target).status = "inWork"
         }
