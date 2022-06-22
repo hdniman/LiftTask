@@ -13,6 +13,9 @@ export default createStore({
     loadFloors (state, payload) {
       state.floors = payload
     },
+    loadQueue (state, payload) {
+      state.liftQueue = payload
+    },
     addLift (state) {
       state.liftsData.push({
         name: "lift_" + state.liftsData.length,
@@ -21,8 +24,10 @@ export default createStore({
         target: 1
       })
     },
-    clear (state) {
-      state.liftsData = []
+    removeLift (state) {
+      if (state.liftsData[state.liftsData.length-1].status == "free") {
+        state.liftsData.pop()
+      }
     },
     addFloor(state) {
       state.floors.unshift({
@@ -31,7 +36,14 @@ export default createStore({
       })
     },
     removeFloor(state) {
-      state.floors.splice(0,1)
+      if (state.floors[0].status == "done" && !state.liftsData.find(el => el.target == state.floors.length)) {
+        state.floors.shift()
+      }
+    },
+    clear(state) {
+      state.floors = []
+      state.liftQueue = []
+      state.liftsData = []
     },
     addToQueue(state,payload) {
       state.liftQueue.push(payload)
@@ -65,9 +77,10 @@ export default createStore({
           el.position -= 2
         }
         if (el.target*100 == el.position) {
+          el.status = "awaiting"
+          state.floors.find(floorEl => floorEl.name == el.target).status = "done"
           setTimeout(() => {
             el.status = "free"
-            state.floors.find(floorEl => floorEl.name == el.target).status = "done"
           },3000)
         }
       })
@@ -81,6 +94,31 @@ export default createStore({
     },
     floors(state) {
       return state.floors
+    },
+    queue(state) {
+      return state.liftQueue
+    },
+    canDeleteLift(state) {
+      if (state.liftsData.length == 0) {
+        return false
+      } else {
+        if (state.liftsData[state.liftsData.length-1].status == "free") {
+          return true
+        } else {
+          return false
+        }
+      }
+    },    
+    canDeleteFloor(state) {
+      if (state.floors.length == 0) {
+        return false
+      } else {
+        if (state.floors[0].status == "done" && !state.liftsData.find(el => el.target == state.floors.length)) {
+          return true
+        } else {
+          return false
+        }
+      }
     }
   },
   modules: {

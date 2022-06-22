@@ -1,7 +1,7 @@
 <template>
   <div class="liftShaft" :style="height">
-    <div class="lift" :style="position">
-    {{lift.target}}
+    <div class="lift" :style="position" :class="lift.status == 'awaiting'? 'blink': ''">
+    {{lift.target*100 > lift.position ? "▲" : lift.target*100 < lift.position ? "▼" : "&emsp;"}} {{lift.target}}
     </div>
   </div>
 </template>
@@ -33,12 +33,14 @@ export default {
 
 <style scoped>
 .lift {
-    opacity: 0.5;
     width: 70px;
     height: 100px;
     background-color:aquamarine;
     border: solid 1px #000;
     box-sizing: border-box;
+    text-align: center;
+    color: rgb(224, 138, 138);
+    font-size: 1.5em;
 }
 
 .liftShaft {
@@ -47,4 +49,20 @@ export default {
     height: 500px;
     background-color: #ccc;
 }
+
+.blink {
+  -webkit-animation: blink 1s linear infinite;
+  animation: blink 1s linear infinite;
+}
+@-webkit-keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
 </style>
